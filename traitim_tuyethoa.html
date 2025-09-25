@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trái tim Tuyết Hoa</title>
+  <style>
+    :root {
+      --bg1: #0f0f1a;
+      --bg2: #1a1a2e;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: grid; place-items: center;
+      background: radial-gradient(1200px 800px at 50% 30%, var(--bg2), var(--bg1));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      overflow: hidden;
+    }
+
+    .wrap {
+      position: relative;
+      width: min(80vmin, 700px);
+      aspect-ratio: 1/1;
+    }
+
+    .glow {
+      position: absolute; inset: -8vmin; filter: blur(30px) saturate(1.4);
+      background: conic-gradient(from 0deg,
+        #ff3d81, #ffb86b, #ffee55, #7dfc8a, #5ad2ff, #a78bfa, #ff3d81);
+      border-radius: 50%;
+      animation: spin 8s linear infinite;
+      opacity: .25;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    svg { width: 100%; height: 100%; display: block; }
+
+    .label {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      font-size: clamp(24px, 8vmin, 64px);
+      font-weight: 800; letter-spacing: .03em;
+      text-transform: capitalize;
+      text-align: center;
+      -webkit-text-stroke: 1px rgba(255,255,255,.7);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.55));
+      pointer-events: none;
+    }
+
+    .label span {
+      background: linear-gradient(90deg,
+        #ff3d81, #ffb86b, #ffee55, #7dfc8a, #5ad2ff, #a78bfa, #ff3d81);
+      background-size: 200% 100%;
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      animation: slide 5s linear infinite;
+    }
+
+    @keyframes slide { to { background-position: 200% 0; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="glow" aria-hidden="true"></div>
+
+    <svg viewBox="0 0 256 256" role="img" aria-label="Trái tim nhiều màu tên Tuyết Hoa">
+      <defs>
+        <linearGradient id="rainbow" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ff3d81">
+            <animate attributeName="offset" values="0;1;0" dur="6s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="25%" stop-color="#ffb86b" />
+          <stop offset="50%" stop-color="#ffee55" />
+          <stop offset="75%" stop-color="#7dfc8a" />
+          <stop offset="100%" stop-color="#5ad2ff" />
+          <animateTransform attributeName="gradientTransform" attributeType="XML" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="8s" repeatCount="indefinite" />
+        </linearGradient>
+        <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <path d="M128 224s-64-36.8-96-80C8 88 32 48 64 48c24 0 40 16 64 40 24-24 40-40 64-40 32 0 56 40 32 96-32 43.2-96 80-96 80z"
+            fill="url(#rainbow)" stroke="#ffffff" stroke-opacity="0.85" stroke-width="6"
+            filter="url(#softGlow)"/>
+
+      <path d="M128 224s-64-36.8-96-80C8 88 32 48 64 48c24 0 40 16 64 40 24-24 40-40 64-40 32 0 56 40 32 96-32 43.2-96 80-96 80z"
+            fill="none" stroke="url(#rainbow)" stroke-width="16" stroke-opacity="0.35" />
+    </svg>
+
+    <div class="label"><span>Tuyết Hoa</span></div>
+  </div>
+</body>
+</html>
