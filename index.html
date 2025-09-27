@@ -3,263 +3,240 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>thu thập trái tim của quy :))</title>
+  <title>Tuyết Hoa vs Boss Quy — Angry Hearts (Mobile FIX v2)</title>
   <style>
-    :root{ --bg1:#0e1224; --bg2:#060915; }
-    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+    :root{
+      --bg1:#0b1024; --bg2:#060912;
+      --panel:rgba(255,255,255,.10); --border:rgba(255,255,255,.22);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent; touch-action:none}
     html,body{height:100%;margin:0}
     body{
-      background:radial-gradient(1200px 800px at 50% 30%,var(--bg1),var(--bg2));
-      font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#fff;overflow:hidden;
-      touch-action:manipulation;
+      font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 800px at 50% 20%,var(--bg1),var(--bg2));
+      color:#fff; overflow:hidden;
     }
     canvas{position:fixed;inset:0;display:block}
+    .hud{
+      position:fixed; left:calc(env(safe-area-inset-left,0) + 10px);
+      top:calc(env(safe-area-inset-top,0) + 10px);
+      display:flex; gap:10px; align-items:center; z-index:5;
+      background:var(--panel); border:1px solid var(--border);
+      backdrop-filter:blur(10px);
+      padding:10px 12px; border-radius:16px; font-weight:800;
+    }
+    .badge{padding:8px 12px; border:1px solid var(--border); border-radius:999px; background:rgba(0,0,0,.15); font-size:14px}
+    .btn{padding:10px 14px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.14); color:#fff; font-weight:900}
+    .rightHud{
+      position:fixed; right:calc(env(safe-area-inset-right,0) + 10px);
+      top:calc(env(safe-area-inset-top,0) + 10px); display:flex; gap:10px; z-index:5;
+    }
+    .fab{min-width:44px; min-height:44px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.14); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-weight:900}
     .title{
-      position:fixed;left:50%;top:10%;transform:translate(-50%,-50%);
-      font-size:clamp(18px,6vmin,44px);font-weight:900;letter-spacing:.02em;
+      position:fixed; left:50%; top:calc(env(safe-area-inset-top,0) + 64px);
+      transform:translateX(-50%); z-index:3;
+      font-size:clamp(18px,5.6vmin,32px); font-weight:900; letter-spacing:.02em;
       -webkit-text-stroke:1px rgba(255,255,255,.6);
       background:linear-gradient(90deg,#ff3d81,#ffb86b,#ffee55,#7dfc8a,#5ad2ff,#a78bfa,#ff3d81);
-      background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
-      filter:drop-shadow(0 6px 14px rgba(0,0,0,.6)); animation:glint 6s linear infinite;
-      pointer-events:none;
+      background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+      animation:glint 6s linear infinite; text-align:center; pointer-events:none;
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
     }
     @keyframes glint{to{background-position:200% 0}}
-    /* Start button only */
-    .startWrap{ position:fixed; inset:0; display:grid; place-items:center; z-index:10; }
-    .startBtn{
-      padding:16px 22px; border-radius:16px; font-weight:900; font-size:18px; cursor:pointer;
-      background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.3);
-      backdrop-filter:blur(6px); box-shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    .smallHint{ margin-top:10px; font-size:12px; opacity:.8; text-align:center }
-    .hidden{ display:none }
-    /* Love overlay */
-    .loveOverlay{ position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);
-      backdrop-filter: blur(6px); opacity:0; pointer-events:none; transition:opacity .35s ease; z-index:12; }
-    .loveOverlay.show{ opacity:1; pointer-events:auto; }
-    .loveBox{ text-align:center; padding:24px 28px; border-radius:20px;
-      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); box-shadow: 0 10px 40px rgba(0,0,0,.35); animation: pop .5s ease; }
-    @keyframes pop{ from{ transform:scale(.85); opacity:.3 } to{ transform:scale(1); opacity:1 } }
-    .loveText{ font-size:clamp(28px,8vmin,72px); font-weight:900; letter-spacing:.04em;
-      background:linear-gradient(90deg,#ff3d81,#ff8ab4,#ffd1dc); -webkit-background-clip:text; background-clip:text; color:transparent;
-      -webkit-text-stroke:1px rgba(255,255,255,.6); text-shadow: 0 8px 30px rgba(255,62,113,.25); }
-    .subLove{ margin-top:6px; opacity:.9 }
-    .btn{margin-top:14px; padding:12px 16px; border-radius:12px; font-weight:900; cursor:pointer;
-         background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff }
-    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);padding:10px 14px;border-radius:12px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(8px);font-weight:800;opacity:0;transition:opacity .25s;z-index:11}
-    .toast.show{opacity:1}
-    @media (max-height: 720px){ .title{display:none} }
+    .power{position:fixed; left:calc(env(safe-area-inset-left,0) + 12px); right:calc(env(safe-area-inset-right,0) + 12px); bottom:calc(env(safe-area-inset-bottom,0) + 16px); height:14px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.15); border:1px solid var(--border); z-index:5}
+    .powerFill{height:100%; width:0%}
+    .powerFill::before{content:""; display:block; height:100%; width:100%; background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
+    .center{position:fixed;inset:0;display:grid;place-items:center;z-index:6;pointer-events:none}
+    .overlay{pointer-events:auto;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);padding:22px 24px;border-radius:18px;text-align:center}
+    .overlay h1{margin:8px 0 6px;font-size:clamp(22px,7vmin,40px)}
+    .overlay p{margin:6px 0 12px;opacity:.9}
+    .hidden{display:none}
+    .hint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.35);border:1px solid var(--border);backdrop-filter:blur(6px);padding:10px 14px;border-radius:12px;z-index:6}
   </style>
 </head>
 <body>
-  <canvas id="game"></canvas>
-  <div class="title">thu thập trái tim của quy :))</div>
+  <canvas id="c"></canvas>
 
-  <!-- Chỉ có nút bắt đầu/chơi lại -->
-  <div class="startWrap" id="startWrap">
-    <div style="text-align:center">
-      <button class="startBtn" id="btnStart">Bắt đầu (30s)</button>
-      <div class="smallHint">Chỉ cần bấm vào trái tim để lấy điểm • Mục tiêu 500</div>
+  <div class="title">Tuyết Hoa 💘 vs Boss Quy</div>
+
+  <div class="hud">
+    <div class="badge">💘 ∞</div>
+    <div class="badge">❤️ <span id="bossHp">100</span>%</div>
+    <div class="badge">🏆 <span id="score">0</span></div>
+    <button class="btn" id="restart">Chơi lại</button>
+  </div>
+
+  <div class="rightHud">
+    <button class="fab" id="fs">⤢</button>
+    <button class="fab" id="vib">🔔</button>
+  </div>
+
+  <div class="power"><div class="powerFill" id="powerFill"></div></div>
+  <div class="hint" id="hint">Chạm 1 lần để đặt ná & Tuyết Hoa • Kéo ngược & thả để bắn</div>
+
+  <div class="center hidden" id="win">
+    <div class="overlay">
+      <h1>🎉 Thắng rồi!</h1>
+      <p>Boss <b>Quy</b> đã bị hạ 💖</p>
+      <button class="btn" onclick="restart()">Chơi lại</button>
     </div>
   </div>
 
-  <!-- LOVE YOU -->
-  <div class="loveOverlay" id="loveOverlay">
-    <div class="loveBox">
-      <div class="loveText">I LOVE YOU 💖</div>
-      <div class="subLove">— gửi đến <b>Tuyết Hoa</b> —</div>
-      <button class="btn" id="btnContinue">Chơi tiếp</button>
+  <div class="center hidden" id="lose">
+    <div class="overlay">
+      <h1>😿 Thua mất...</h1>
+      <p>Chạm để dời ná tới ngón tay, kéo ngược & thả để bắn.</p>
+      <button class="btn" onclick="restart()">Chơi lại</button>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+<script>
+const cvs = document.getElementById('c');
+const ctx = cvs.getContext('2d');
+const DPR = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+let W=0, H=0, G=2200;
+let firstRun = true;
+function resize(){
+  W = cvs.width = innerWidth*DPR;
+  H = cvs.height = innerHeight*DPR;
+  cvs.style.width = innerWidth + 'px';
+  cvs.style.height = innerHeight + 'px';
+  setDefaultPositions();
+  setupBlocks();
+}
+addEventListener('resize', resize, {passive:true});
 
-  <script>
-    // ====== setup ======
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d', { alpha: true });
-    const DPR = Math.max(1, Math.min(1.5, window.devicePixelRatio||1));
-    let W=0,H=0;
-    function resize(){ W=canvas.width=innerWidth*DPR; H=canvas.height=innerHeight*DPR; canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px'; }
-    addEventListener('resize', resize, {passive:true}); resize();
+const bossHpEl = document.getElementById('bossHp');
+const scoreEl  = document.getElementById('score');
+const powerFill = document.getElementById('powerFill');
+document.getElementById('restart').onclick = () => restart();
 
-    const toast = document.getElementById('toast');
-    const startWrap = document.getElementById('startWrap');
-    const btnStart = document.getElementById('btnStart');
-    const loveOverlay = document.getElementById('loveOverlay');
-    const btnContinue = document.getElementById('btnContinue');
+const state = { hearts:[], blocks:[], particles:[], score:0, aiming:false, gameover:false, vibrate:false };
+const sling = { x: 0, y: 0, r: 56*DPR };
+const TH = { x:0, y:0 };
+const boss = { x:0, y:0, r: 70*DPR, hp: 100 };
 
-    // ====== drawing ======
-    const heartPath = new Path2D("M128 224s-64-36.8-96-80C8 88 32 48 64 48c24 0 40 16 64 40 24-24 40-40 64-40 32 0 56 40 32 96-32 43.2-96 80-96 80z");
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function setDefaultPositions(){
+  // Đặt ná ở ~28% chiều rộng, 60% chiều cao — luôn thấy rõ trên mọi máy
+  if (firstRun){ sling.x = Math.max(220*DPR, W*0.28); sling.y = H*0.60; firstRun = false; }
+  // Boss ở bên phải
+  boss.x = W - 220*DPR; boss.y = H*0.62;
+  // Cập nhật Tuyết Hoa theo ná
+  TH.x = sling.x - 14*DPR; TH.y = sling.y + 14*DPR;
+}
 
-    function drawHeart(x,y,s,hue,alpha=1){
-      ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.globalAlpha = alpha;
-      const grad = ctx.createLinearGradient(-128,0,128,0);
-      const c = [(hue)%360,(hue+60)%360,(hue+120)%360,(hue+180)%360,(hue+240)%360,(hue+300)%360];
-      grad.addColorStop(0, `hsl(${c[0]},100%,60%)`);
-      grad.addColorStop(.2, `hsl(${c[1]},100%,60%)`);
-      grad.addColorStop(.4, `hsl(${c[2]},100%,60%)`);
-      grad.addColorStop(.6, `hsl(${c[3]},100%,60%)`);
-      grad.addColorStop(.8, `hsl(${c[4]},100%,60%)`);
-      grad.addColorStop(1, `hsl(${c[5]},100%,60%)`);
-      ctx.fillStyle = grad; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 6/DPR;
-      ctx.filter = 'drop-shadow(0 6px 14px rgba(0,0,0,.35))';
-      ctx.fill(heartPath); ctx.stroke(heartPath);
-      // chữ "quy" giữa
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.font = `900 ${84}px system-ui,Segoe UI,Arial`;
-      ctx.lineWidth = 12; ctx.strokeStyle = 'rgba(255,255,255,.95)';
-      ctx.strokeText('quy', 128, 128);
-      ctx.fillStyle = 'rgba(10,10,30,.92)';
-      ctx.fillText('quy', 128, 128);
-      ctx.restore();
-    }
+function setupBlocks(){
+  state.blocks.length = 0;
+  const bx=boss.x-220*DPR, by=boss.y, w=46*DPR, h=130*DPR, gap=18*DPR;
+  for(let i=0;i<3;i++) state.blocks.push({x:bx+i*(w+gap), y:by-h/2, w, h, hp:38});
+  state.blocks.push({x:bx-10*DPR, y:by-h-24*DPR, w:(w+gap)*3+36*DPR, h:24*DPR, hp:38});
+}
 
-    // ====== game ======
-    const entities = [];
-    let score=0, combo=1, timeLeft=30, t0=0, paused=true, over=false, emitTimer=0, hueBase=0;
-    const GOAL = 500;
+const heartPath = new Path2D("M128 224s-64-36.8-96-80C8 88 32 48 64 48c24 0 40 16 64 40 24-24 40-40 64-40 32 0 56 40 32 96-32 43.2-96 80-96 80z");
+function heartGrad(hue){const g=ctx.createLinearGradient(-128,0,128,0);const c=[hue%360,(hue+60)%360,(hue+120)%360,(hue+180)%360,(hue+240)%360,(hue+300)%360];c.forEach((h,i)=>g.addColorStop(i/5,`hsl(${h},100%,60%)`));return g;}
+function drawHeartAt(x,y,s,ang,hue){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.scale(s,s);
+  ctx.fillStyle = heartGrad(hue); ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=6/DPR; ctx.filter='drop-shadow(0 6px 14px rgba(0,0,0,.35))';
+  ctx.fill(heartPath); ctx.stroke(heartPath);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font=`900 ${86}px system-ui`; ctx.lineWidth=13; ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.strokeText('quy',128,128); ctx.fillStyle='rgba(10,10,30,.92)'; ctx.fillText('quy',128,128);
+  ctx.restore();
+}
 
-    function diff(){ return {rate: 0.55, speed: [80,150], size:[0.36,0.52], time: 30}; }
-    let conf = diff();
+// Input
+let aimPt=null;
+function moveSlingToPointer(e){
+  const r=cvs.getBoundingClientRect();
+  const x=(e.clientX-r.left)*DPR, y=(e.clientY-r.top)*DPR;
+  sling.x = clamp(x, 120*DPR, W*0.62);
+  sling.y = clamp(y, H*0.45, H*0.82);
+  TH.x = sling.x - 14*DPR; TH.y = sling.y + 14*DPR;
+}
+function pointerDown(e){
+  if(state.gameover) return;
+  moveSlingToPointer(e);
+  const r=cvs.getBoundingClientRect();
+  aimPt={x:(e.clientX-r.left)*DPR,y:(e.clientY-r.top)*DPR};
+  state.aiming=true;
+  document.getElementById('hint').classList.add('hidden');
+}
+function pointerMove(e){
+  if(!state.aiming) return;
+  const r=cvs.getBoundingClientRect();
+  aimPt={x:(e.clientX-r.left)*DPR,y:(e.clientY-r.top)*DPR};
+}
+function pointerUp(e){
+  if(!state.aiming) return;
+  state.aiming=false;
+  const dx=sling.x-aimPt.x, dy=sling.y-aimPt.y;
+  const power=Math.min(1.2, Math.hypot(dx,dy)/(180*DPR));
+  const angle=Math.atan2(dy,dx);
+  const v=1700*power;
+  spawnHeart(sling.x, sling.y, Math.cos(angle)*v, Math.sin(angle)*v);
+  aimPt=null; setPower(0);
+  if(state.vibrate && navigator.vibrate) navigator.vibrate(10);
+}
+cvs.addEventListener('pointerdown', pointerDown);
+cvs.addEventListener('pointermove', pointerMove);
+addEventListener('pointerup', pointerUp);
+addEventListener('pointercancel', pointerUp);
 
-    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t = setTimeout(()=>toast.classList.remove('show'), 900); }
+function setPower(pct){ powerFill.style.width = (pct*100).toFixed(1)+'%'; }
 
-    function spawnHeart(){
-      const side = Math.random() < 0.5 ? -1 : 1;
-      const x = (W/2) + side*(W*0.33)*Math.random();
-      const y = -160*DPR;
-      const sp = conf.speed[0] + Math.random()*(conf.speed[1]-conf.speed[0]);
-      const size = conf.size[0] + Math.random()*(conf.size[1]-conf.size[0]);
-      const hue = (hueBase + Math.random()*60) % 360;
-      const rotRate = (Math.random()*2-1)*0.35;
-      entities.push({x,y,vy:sp,scale:size*DPR,alive:true,hue,a:1,rot:0,rotRate});
-    }
+function spawnHeart(x,y,vx,vy){ const hue=(Math.random()*360)|0; state.hearts.push({x,y,vx,vy,ang:0,spin:(Math.random()*2-1)*2,hue,scale:0.5*DPR,life:4,bounces:0});}
+function spawnBurst(x,y,hue,n=26){ for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, sp=80+Math.random()*260; state.particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0.9,h:hue}); }}
 
-    function tick(dt){
-      emitTimer -= dt;
-      if (emitTimer <= 0){ spawnHeart(); emitTimer = conf.rate; }
-      hueBase = (hueBase + 20*dt)%360;
-      for (let i=entities.length-1;i>=0;i--){
-        const e = entities[i];
-        e.y += e.vy*dt;
-        e.rot += e.rotRate*dt;
-        if (e.y - 150*e.scale > H) entities.splice(i,1);
-      }
-    }
+function update(dt){
+  if(state.aiming && aimPt){ const dx=sling.x-aimPt.x, dy=sling.y-aimPt.y; const p=Math.min(1, Math.hypot(dx,dy)/(180*DPR)); setPower(p); }
+  for(let i=state.hearts.length-1;i>=0;i--){
+    const h=state.hearts[i];
+    h.life -= dt; h.vy += G*dt; h.x += h.vx*dt; h.y += h.vy*dt; h.ang += h.spin*dt;
+    const ground=H-90*DPR;
+    if(h.y > ground){ h.y=ground; h.vy*=-0.25; h.vx*=0.7; h.bounces++; if(h.bounces>=1 || Math.abs(h.vy)<60){ state.hearts.splice(i,1); continue; } }
+    if(h.life<=0 || h.x<-150 || h.x>W+150 || h.y>H+220){ state.hearts.splice(i,1); continue; }
+    const dx=h.x-boss.x, dy=h.y-boss.y, R=boss.r+(120*DPR*h.scale);
+    if(dx*dx+dy*dy<=R*R){ const dmg = Math.min(22, Math.max(8, Math.hypot(h.vx,h.vy)/1300*22)); boss.hp=Math.max(0,boss.hp-dmg); state.score+=Math.round(dmg); spawnBurst(h.x,h.y,h.hue,28); state.hearts.splice(i,1); if(boss.hp<=0) youWin(); }
+    for(const b of state.blocks){ if(b.hp<=0) continue; if(h.x>b.x&&h.x<b.x+b.w&&h.y>b.y&&h.y<b.y+b.h){ b.hp -= 18; h.vy*=-0.5; h.vx*=0.7; spawnBurst(h.x,h.y,h.hue,18); if(b.hp<=0) state.score += 15; } }
+  }
+  for(let i=state.particles.length-1;i>=0;i--){ const p=state.particles[i]; p.life-=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=800*dt; if(p.life<=0) state.particles.splice(i,1); }
+}
 
-    function render(){
-      ctx.clearRect(0,0,W,H);
-      const g = ctx.createRadialGradient(W/2,H*0.3,10,W/2,H*0.3,Math.max(W,H)*0.8);
-      g.addColorStop(0,'rgba(255,255,255,.03)'); g.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-      entities.forEach(e=>{ ctx.save(); ctx.translate(e.x,e.y); ctx.rotate(e.rot); drawHeart(0,0,e.scale,e.hue,e.a); ctx.restore(); });
-      renderParticles(0.016);
-    }
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const g=ctx.createRadialGradient(W/2,H*0.25,10,W/2,H*0.25,Math.max(W,H)*0.8);
+  g.addColorStop(0,'rgba(255,255,255,.03)'); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#0b132f'; ctx.fillRect(0, H-90*DPR, W, 90*DPR);
+  if(state.aiming && aimPt){ ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=3*DPR; ctx.beginPath(); ctx.moveTo(sling.x, sling.y); ctx.lineTo(aimPt.x, aimPt.y); ctx.stroke(); }
+  // Tuyết Hoa
+  ctx.save(); ctx.translate(TH.x, TH.y); ctx.fillStyle='rgba(255,255,255,.98)'; ctx.beginPath(); ctx.arc(0,0,30*DPR,0,Math.PI*2); ctx.fill(); ctx.fillStyle='rgba(255,156,203,.98)'; ctx.fillRect(-24*DPR,12*DPR,48*DPR,58*DPR); ctx.fillStyle='#fff'; ctx.font=`${18*DPR}px system-ui`; ctx.textAlign='center'; ctx.fillText('Tuyết Hoa', 0, 84*DPR); ctx.restore();
+  // boss
+  ctx.save(); ctx.translate(boss.x,boss.y); ctx.fillStyle='rgba(0,0,0,.25)'; ctx.beginPath(); ctx.arc(8*DPR,8*DPR,boss.r+8*DPR,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#222c5a'; ctx.beginPath(); ctx.arc(0,0,boss.r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#ffd166'; ctx.font=`${20*DPR}px system-ui`; ctx.textAlign='center'; ctx.fillText('Boss: Quy',0,boss.r+30*DPR); const pct=boss.hp/100; ctx.strokeStyle='#f43f5e'; ctx.lineWidth=12*DPR; ctx.beginPath(); ctx.arc(0,0,boss.r+18*DPR,-Math.PI/2,-Math.PI/2+Math.PI*2*pct); ctx.stroke(); ctx.restore();
+  // blocks
+  for(const b of state.blocks){ if(b.hp<=0) continue; ctx.fillStyle='rgba(255,255,255,.12)'; ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2*DPR; ctx.fillRect(b.x,b.y,b.w,b.h); ctx.strokeRect(b.x,b.y,b.w,b.h); }
+  for(const h of state.hearts){ drawHeartAt(h.x,h.y,h.scale,h.ang,h.hue); }
+  for(const p of state.particles){ ctx.globalAlpha=Math.max(0,p.life/0.9); ctx.fillStyle=`hsl(${(p.h+Math.random()*30)|0},100%,60%)`; ctx.beginPath(); ctx.arc(p.x,p.y,3*DPR+Math.random()*4*DPR,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; }
+  bossHpEl.textContent = Math.max(0,boss.hp).toFixed(0);
+  scoreEl.textContent  = state.score.toFixed(0);
+}
 
-    function loop(ts){
-      if (!t0) t0 = ts;
-      const dt = Math.min(0.05, (ts - t0)/1000);
-      t0 = ts;
-      if (!paused && !over){
-        timeLeft -= dt;
-        if (timeLeft <= 0){ endGame(); return; }
-        tick(dt);
-        render();
-      } else {
-        render();
-      }
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
+let last=0; function loop(ts){ const dt=Math.min(0.04,(ts-last)/1000 || 0); last=ts; if(!state.gameover){ update(dt); draw(); } requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
 
-    function pointHitHeart(px, py){
-      for (let i=entities.length-1;i>=0;i--){
-        const h = entities[i];
-        const inv = new DOMMatrix().translate(h.x,h.y).rotate(h.rot*180/Math.PI).scale(h.scale,h.scale).invertSelf();
-        const pt = new DOMPoint(px,py).matrixTransform(inv);
-        if (ctx.isPointInPath(heartPath, pt.x, pt.y)){ return i; }
-      }
-      return -1;
-    }
+function youWin(){ state.gameover=true; document.getElementById('win').classList.remove('hidden'); }
+function youLose(){ state.gameover=true; document.getElementById('lose').classList.remove('hidden'); }
+function restart(){ state.hearts.length=0; state.particles.length=0; state.score=0; boss.hp=100; setupBlocks(); state.gameover=false; document.getElementById('win').classList.add('hidden'); document.getElementById('lose').classList.add('hidden'); }
 
-    function popAt(x,y){
-      const idx = pointHitHeart(x,y);
-      if (idx>=0){
-        const h = entities[idx];
-        makeParticles(h.x, h.y, h.hue);
-        entities.splice(idx,1);
-        score += Math.ceil(10*combo);
-        combo = Math.min(10, combo+0.25);
-        soundPop();
-        if (score >= GOAL && !loveOverlay.classList.contains('show')){
-          showLove();
-        } else {
-          showToast('+ ' + Math.ceil(10*combo) + '  •  ' + score + '/' + GOAL);
-        }
-      } else {
-        combo = 1; soundMiss();
-      }
-    }
+setInterval(()=>{ if(!state.gameover && boss.hp>0){ youLose(); } }, 120000);
 
-    canvas.addEventListener('pointerdown', e=>{
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * DPR;
-      const y = (e.clientY - rect.top) * DPR;
-      popAt(x,y);
-    }, {passive:true});
+const fsBtn = document.getElementById('fs');
+fsBtn.addEventListener('click', async ()=>{ const el=document.documentElement; try{ if(!document.fullscreenElement){ await el.requestFullscreen?.(); fsBtn.textContent='⤡'; } else { await document.exitFullscreen?.(); fsBtn.textContent='⤢'; } }catch{} });
+const vibBtn = document.getElementById('vib');
+vibBtn.addEventListener('click', ()=>{ state.vibrate=!state.vibrate; vibBtn.style.background = state.vibrate ? 'rgba(34,197,94,.35)' : 'rgba(255,255,255,.14)'; if(state.vibrate && navigator.vibrate) navigator.vibrate(20); });
 
-    // particles
-    const particles=[];
-    function makeParticles(x,y,hue){
-      for (let i=0;i<30;i++){
-        const a = Math.random()*Math.PI*2;
-        const sp = 60 + Math.random()*220;
-        particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0.7,size:3+Math.random()*6,hue});
-      }
-    }
-    function renderParticles(dt){
-      for (let i=particles.length-1;i>=0;i--){
-        const p = particles[i];
-        p.life -= dt;
-        p.x += p.vx*dt; p.y += p.vy*dt;
-        if (p.life<=0){ particles.splice(i,1); continue; }
-        ctx.save();
-        ctx.globalAlpha = Math.max(0,p.life/0.7);
-        ctx.fillStyle = `hsl(${(p.hue+Math.random()*40)%360},100%,60%)`;
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    // flow
-    function startGame(){
-      conf = diff();
-      score=0; combo=1; over=false; paused=false; entities.length=0; particles.length=0;
-      timeLeft = conf.time; emitTimer = 0; hueBase=0;
-      startWrap.classList.add('hidden');
-      showToast('Bắt đầu!');
-    }
-    function endGame(){
-      over = true; paused = true;
-      startWrap.classList.remove('hidden');
-      btnStart.textContent = 'Chơi lại (30s) • Điểm: ' + score;
-      showToast('Hết giờ! Điểm: ' + score);
-    }
-    function showLove(){ paused = true; loveOverlay.classList.add('show'); }
-    btnContinue.addEventListener('click', ()=>{ loveOverlay.classList.remove('show'); paused = false; });
-
-    btnStart.addEventListener('click', startGame);
-
-    // simple sounds
-    let actx, master;
-    function ensureAudio(){ if (!actx){ actx = new (window.AudioContext||window.webkitAudioContext)(); master = actx.createGain(); master.connect(actx.destination); master.gain.value=.25; } }
-    function soundPop(){ ensureAudio(); const o=actx.createOscillator(), g=actx.createGain(); o.type='sine'; o.frequency.value=520; o.connect(g); g.connect(master); const t=actx.currentTime; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.6,t+.01); o.frequency.exponentialRampToValueAtTime(880,t+.07); g.gain.exponentialRampToValueAtTime(0.0001,t+.12); o.start(t); o.stop(t+.15); }
-    function soundMiss(){ ensureAudio(); const o=actx.createOscillator(), g=actx.createGain(); o.type='sawtooth'; o.frequency.value=220; o.connect(g); g.connect(master); const t=actx.currentTime; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.5,t+.01); o.frequency.exponentialRampToValueAtTime(140,t+.2); g.gain.exponentialRampToValueAtTime(0.0001,t+.25); o.start(t); o.stop(t+.3); }
-
-    // unlock audio on first tap
-    document.addEventListener('pointerdown', ()=>{ if(!actx){ ensureAudio(); } }, {once:true});
-  </script>
+// init
+resize();
+</script>
 </body>
 </html>
+
 
